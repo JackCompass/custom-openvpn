@@ -1,0 +1,14 @@
+version: '3.3'
+services:
+  openvpn:
+    image: kylemanna/openvpn:latest
+    container_name: openvpn
+    ports:
+      - "1194:1194/udp"  # Map UDP port 1194 on the host to the container
+    restart: always      # Ensure the container restarts on failure
+    volumes:
+      - ./openvpn-data:/etc/openvpn  # Persist OpenVPN configuration and certificates
+    cap_add:
+      - NET_ADMIN  # Required for OpenVPN to manage network interfaces
+    environment:
+      - EASYRSA_BATCH=1  # Run in batch mode (non-interactive)
