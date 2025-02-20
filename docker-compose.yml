@@ -12,5 +12,4 @@ services:
       - NET_ADMIN
     environment:
       - EASYRSA_BATCH=1
-      - VM_IP=${VM_IP}  # Pass the VM's public IP as an environment variable
     entrypoint: /bin/sh -c "/scripts/init-openvpn.sh && ovpn_run"
