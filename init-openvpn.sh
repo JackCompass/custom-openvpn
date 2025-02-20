@@ -1,27 +1,20 @@
-#!/bin/bash
-
-# Set the VM's public IP address
-VM_IP="54.179.187.4"  # Replace with your VM's public IP
+#!/bin/sh
 
 # Step 1: Generate OpenVPN configuration
-echo "Generating OpenVPN configuration..."
-docker-compose run --rm openvpn ovpn_genconfig -u udp://$VM_IP
+echo "Generating OpenVPN configuration for UDP://$VM_IP..."
+ovpn_genconfig -u udp://$VM_IP
 
 # Step 2: Initialize the PKI (Public Key Infrastructure)
 echo "Initializing PKI..."
-docker-compose run --rm openvpn ovpn_initpki
+ovpn_initpki
 
-# Step 3: Start the OpenVPN service
-echo "Starting OpenVPN service..."
-docker-compose up -d
-
-# Step 4: Generate a client certificate
-CLIENT_NAME="client1"  # Replace with your desired client name
+# Step 3: Generate a client certificate
+CLIENT_NAME="client1"  # You can customize this if needed
 echo "Generating client certificate for $CLIENT_NAME..."
-docker-compose run --rm openvpn easyrsa build-client-full $CLIENT_NAME nopass
+easyrsa build-client-full $CLIENT_NAME nopass
 
-# Step 5: Export the client configuration
+# Step 4: Export the client configuration
 echo "Exporting client configuration..."
-docker-compose run --rm openvpn ovpn_getclient $CLIENT_NAME > $CLIENT_NAME.ovpn
+ovpn_getclient $CLIENT_NAME > /etc/openvpn/$CLIENT_NAME.ovpn
 
-echo "Setup complete! Client configuration file: $CLIENT_NAME.ovpn"
+echo "Setup complete! Client configuration file: /etc/openvpn/$CLIENT_NAME.ovpn"
