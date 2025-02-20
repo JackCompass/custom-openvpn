@@ -1,8 +1,20 @@
-FROM kylemanna/openvpn:latest
+FROM ubuntu:latest
 
-# Copy the setup script into the container
-COPY init-openvpn.sh /scripts/init-openvpn.sh
-RUN chmod +x /scripts/init-openvpn.sh
+# Update and install necessary packages
+RUN apt-get update && apt-get install -y \
+    openssh-server \
+    sudo \
+    curl \
+    vim \
+    net-tools
 
-# Expose the OpenVPN port
-EXPOSE 1194/udp
+# Set up SSH
+RUN mkdir /var/run/sshd
+RUN echo 'root:yourpassword' | chpasswd
+RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+
+# Expose SSH port
+EXPOSE 22
+
+# Start SSH service
+CMD ["/usr/sbin/sshd", "-D"]
