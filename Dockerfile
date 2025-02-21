@@ -1,6 +1,6 @@
 FROM ubuntu:latest
 
-# Update and install necessary packages
+# Install necessary packages
 RUN apt-get update && apt-get install -y \
     openssh-server \
     sudo \
@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
 
 # Set up SSH
 RUN mkdir /var/run/sshd
-RUN echo 'root:yourpassword' | chpasswd
+RUN echo 'root:pirateocean' | chpasswd
 RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 
 # Expose SSH port
